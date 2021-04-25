@@ -1,59 +1,85 @@
 from queue_interface import AbstractQueue
+from exceptions import QueueOverflowError, QueueUnderflowError
 
 class Queue(AbstractQueue): # queue implementation using list
-    def __init__(self):
-        self.queue = []
-
-    def size(self):
-        return len(self.queue)
-
-    def is_empty(self):
-        return self.size() == 0
+    def __init__(self, size):
+        self.size = size
+        self.queue = [None for _ in range(size)]
+        self.last = -1
     
     def enqueue(self, item):
-        self.queue.insert(0, item)
+        if self.last + 1 == self.size:
+            raise QueueOverflowError('Queue is full')
+        if self.last == -1:
+            self.queue[0] = item
+        else:
+            self.queue[self.last+1] = item
+        self.last += 1
     
     def dequeue(self):
         if self.is_empty():
-            return 'UnderFlow'
-        item = self.queue.pop()
-        return item
+            raise QueueUnderflowError('Queue is empty')
+        temp = self.queue[self.last]
+        self.queue[self.last] = None
+        self.last -= 1
+        return temp
+
+    def is_empty(self):
+        return self.last == -1
     
     def front(self):
-        if len(self.queue) > 0:
+        if self.is_empty():
+            return 'Queue is empty'
+        else:
             return self.queue[0]
     
     def rear(self):
-        if len(self.queue) > 0:
-            return self.queue[-1]
+        if self.is_empty():
+            return 'Queue is empty'
+        else:
+            return self.queue[self.last]
 
-    # following four methods are used in double_ended-queue
-    # def inverted_enqueue(self, item):
-    #     self.queue.append(item)
+    def display(self):
+        if self.is_empty():
+            return 'Queue is empty'
+        else:
+            print(*self.queue[:self.last+1])
 
-    # def inverted_dequeue(self):
-    #     item = self.queue.pop(0)
-    #     return item
-    
-    # def inverted_front(self):
-    #     return self.rear()
-    
-    # def inverted_rear(self):
-    #     return self.front()
-    
-    def __str__(self):
-        return " ".join(map(str, self.queue))
+    # following two methods are used in double_ended-queue
+    def inverted_enqueue(self, item):
+        if self.is_empty():
+            self.enqueue(item)
+        elif self.last+1 == self.size:
+            raise QueueOverflowError('Queue is full')
+        else:
+            self.queue.insert(0, item)
+            self.queue = self.queue[:-2]
+            self.last += 1
 
-# q1 = Queue()
-# q1.enqueue(5)
-# q1.enqueue(3)
-# # q1.inverted_enqueue(6)
-# # q1.inverted_dequeue()
-# print(q1)
-# q1.enqueue(7)
-# q1.dequeue()
-# print(q1)
-# print(q1.is_empty())
-# q1.dequeue()
-# print(q1)
+
+    def inverted_dequeue(self):
+        if self.is_empty():
+            raise QueueUnderflowError('Queue is empty')
+        else:
+            temp = self.queue[self.last]
+            self.queue[self.last] = None
+            self.last -= 1
+            return temp
+
+
+q1 = Queue(6)
+q1.enqueue(5)
+q1.inverted_enqueue(9)
+q1.enqueue(3)
+# q1.inverted_enqueue(6)
+# q1.inverted_dequeue()
+q1.display()
+q1.enqueue(7)
+q1.enqueue(7)
+q1.dequeue()
+q1.display()
+print(q1.is_empty())
+q1.dequeue()
+q1.inverted_enqueue(9)
+q1.display()
 

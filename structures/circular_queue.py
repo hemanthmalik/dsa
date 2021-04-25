@@ -17,7 +17,7 @@ class CircularQueue(AbstractQueue):
         self.queue[self.last] = item
 
     def dequeue(self):
-        if self.first == -1:
+        if self.is_empty():
             raise QueueUnderflowError('Queue is empty.')
         elif (self.first == self.last):
             temp = self.queue[self.first]
@@ -26,9 +26,24 @@ class CircularQueue(AbstractQueue):
             temp = self.queue[self.first]
             self.first = (self.first+1)%self.size
         return temp
-    
+
+    def is_empty(self):
+        return self.first == -1
+
+    def front(self):
+        if self.is_empty():
+            return 'Queue is empty'
+        else:
+            return self.queue[0]
+
+    def rear(self):
+        if self.is_empty():
+            return 'Queue is empty'
+        else:
+            return self.queue[self.last]
+
     def display(self):
-        if self.first == -1:
+        if self.is_empty():
             print('Queue is empty')
         elif self.last >= self.first:
             print(*self.queue[self.first: self.last+1])
@@ -37,13 +52,6 @@ class CircularQueue(AbstractQueue):
             print(*self.queue[0: self.last+1])
         if (self.last+1)%self.size == self.first:
             print('Queue is full')
-
-    def front(self):
-        pass
-
-    def rear(self):
-        pass
-
 
 q1 = CircularQueue(6)
 q1.display()

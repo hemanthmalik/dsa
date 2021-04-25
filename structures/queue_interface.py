@@ -10,9 +10,17 @@ class AbstractQueue(ABC):
         pass
 
     @abstractclassmethod
+    def is_empty(self):
+        pass
+
+    @abstractclassmethod
     def front(self):
         pass
 
     @abstractclassmethod
     def rear(self):
+        pass
+
+    @abstractclassmethod
+    def display(self):
         pass
