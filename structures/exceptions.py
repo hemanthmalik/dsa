@@ -6,3 +6,9 @@ class QueueOverflowError(CustomException):
 
 class QueueUnderflowError(CustomException):
     pass
+
+class EmptyLinkedListError(CustomException):
+    pass
+
+class IndexOutOfRangeError(CustomException):
+    pass
